@@ -22,3 +22,7 @@ body {
     max-height: 30vh;
 	background-color: Moccasin;
 }
+
+ul {
+    list-style-type: none;
+}
