@@ -9,7 +9,7 @@ $( document ).ready(function() {
     var checked_color = 'input[name=color]:checked';
 
     $(name_input).focus();
-    $("div.name").append("<p>" + name + "</p>");
+    $("div.name").append('<p>' + name + '</p>');
     var color = $(checked_color, '#color').val();
     $(name_input).css("color", color);
 
