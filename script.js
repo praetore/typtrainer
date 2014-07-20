@@ -1,26 +1,26 @@
-/**
- * Created by Darryl on 19-6-14.
- */
+function getRandomName() {
+    var names = ["enzo", "zino", "darryl", "mariska", "bram", "mayron", "jayden", "willy", "marvin"];
+    return names[Math.floor(Math.random() * names.length)];
+}
 
 $( document ).ready(function() {
-    var names = ["enzo", "zino", "darryl", "mariska", "bram", "mayron", "jayden", "willy", "marvin"];
-    var name = names[Math.floor(Math.random() * names.length)];
     var name_input = '.name_input input[type="text"]';
     var checked_color = 'input[name=color]:checked';
-
-    $(name_input).focus();
-    $("div.name").append('<p>' + name + '</p>');
     var color = $(checked_color, '#color').val();
-    $(name_input).css("color", color);
+    var name = getRandomName();
 
-	$('#color').find('input').on('change', function() {
+    $("div.name").append('<p>' + name + '</p>');
+
+	$('#color').find('input').change(function() {
         color = $(checked_color, '#color').val();
 		$(name_input).css("color", color);
 	});
 
-	var audioElement = document.createElement('audio');
+    $(name_input).css("color", color).val('').prop('disabled', false).focus();
 
-	$('.name_input').on('input',function(){
+	var audioElement = document.createElement('audio');
+    var prevLen = 0;
+	$('.name_input').on('input', function(){
 		var sound;
         var color;
         var given_name = $(name_input).val();
@@ -33,10 +33,10 @@ $( document ).ready(function() {
 			setTimeout(function() {
 				location.reload()
 			}, 2000);
-		} else if (given_name == name_check && name_check != name) {
+		} else if (given_name == name_check && name_check != name && given_name.length >= prevLen) {
             color = 'lightgreen';
 			sound = 'smw_coin.wav';
-		} else if (given_name.length == 0) {
+		} else if (given_name.length == 0 || given_name.length < prevLen) {
 			sound = "";
 			color = 'Moccasin';
 		} else {
@@ -45,7 +45,7 @@ $( document ).ready(function() {
 			sound = 'smw_jump.wav';
 			color = 'tomato';
 		}
-
+        prevLen = given_name.length;
         audioElement.setAttribute('src', 'snd/'+sound);
 		audioElement.play();
 		$(name_input).css("background-color", color);
