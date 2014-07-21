@@ -4,50 +4,56 @@ function getRandomName() {
 }
 
 $( document ).ready(function() {
-    var name_input = '.name_input input[type="text"]';
-    var checked_color = 'input[name=color]:checked';
-    var color = $(checked_color, '#color').val();
+    var nameInput = '.name_input input[type="text"]';
     var name = getRandomName();
+
+    var storedColor = $.jStorage.get('color', 'darkblue');
+
+    $('input[type=radio][value=' + storedColor + ']').attr('checked', 'checked');
+
+    var checkedColor = 'input[name=color]:checked';
+    var color = $(checkedColor, '#color').val();
 
     $("div.name").append('<p>' + name + '</p>');
 
 	$('#color').find('input').change(function() {
-        color = $(checked_color, '#color').val();
-		$(name_input).css("color", color);
+        color = $(checkedColor, '#color').val();
+        $.jStorage.set('color', color);
+		$(nameInput).css("color", color);
 	});
 
-    $(name_input).css("color", color).val('').prop('disabled', false).focus();
+    $(nameInput).css("color", color).val('').prop('disabled', false).focus();
 
 	var audioElement = document.createElement('audio');
-    var prevLen = 0;
+    var prevGuess = "";
 	$('.name_input').on('input', function(){
 		var sound;
-        var color;
-        var given_name = $(name_input).val();
-		var name_check = name.substring(0, given_name.length);
+        var backgroundColor;
+        var givenName = $(nameInput).val();
+		var nameCheck = name.substring(0, givenName.length);
 
-		if (given_name == name){
-            color = 'lightgreen';
+		if (givenName == name){
+            backgroundColor = 'lightgreen';
             sound = 'smw_1-up.wav';
-			$(name_input).prop('disabled', true);
+			$(nameInput).prop('disabled', true);
 			setTimeout(function() {
 				location.reload()
 			}, 2000);
-		} else if (given_name == name_check && name_check != name && given_name.length >= prevLen) {
-            color = 'lightgreen';
+		} else if (givenName == nameCheck && nameCheck != name && givenName.length >= prevGuess.length) {
+            backgroundColor = 'lightgreen';
 			sound = 'smw_coin.wav';
-		} else if (given_name.length == 0 || given_name.length < prevLen) {
+		} else if (givenName.length == 0 || givenName.length < prevGuess.length) {
 			sound = "";
-			color = 'Moccasin';
+			backgroundColor = 'Moccasin';
 		} else {
-			var correction = given_name.substring(0, given_name.length-1);
-			$(name_input).val(correction);
+			var correction = givenName.substring(0, givenName.length-1);
+			$(nameInput).val(correction);
 			sound = 'smw_jump.wav';
-			color = 'tomato';
+			backgroundColor = 'tomato';
 		}
-        prevLen = given_name.length;
+        prevGuess = givenName;
         audioElement.setAttribute('src', 'snd/'+sound);
 		audioElement.play();
-		$(name_input).css("background-color", color);
+		$(nameInput).css("background-color", backgroundColor);
     });
 });
