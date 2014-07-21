@@ -1,42 +1,45 @@
 function getRandomName() {
     var names = ["enzo", "zino", "darryl", "mariska", "bram", "mayron", "jayden", "willy", "marvin"];
-    return names[Math.floor(Math.random() * names.length)];
+    var name = names[Math.floor(Math.random() * names.length)];
+    var prevName = $.jStorage.get('prevName', '');
+    while (name == prevName) {
+        name = getRandomName();
+    }
+    $.jStorage.set('prevName', name);
+    return name;
 }
 
 $( document ).ready(function() {
-    var nameInput = '.name_input input[type="text"]';
     var name = getRandomName();
 
-    var storedColor = $.jStorage.get('color', 'darkblue');
-
-    $('input[type=radio][value=' + storedColor + ']').attr('checked', 'checked');
-
-    var checkedColor = 'input[name=color]:checked';
-    var color = $(checkedColor, '#color').val();
+    var colorPicked = $('input[name=color]:checked', '#color').val();
+    var nameInput = '.name_input input[type="text"]';
 
     $("div.name").append('<p>' + name + '</p>');
+    $(nameInput).css('color', colorPicked).val('').prop('disabled', false).focus();
+
+    $('input[type=radio][value=' + $.jStorage.get('color', 'darkblue') + ']').
+        attr('checked', 'checked');
 
 	$('#color').find('input').change(function() {
-        color = $(checkedColor, '#color').val();
-        $.jStorage.set('color', color);
-		$(nameInput).css("color", color);
-	});
+        colorPicked = $('input[name=color]:checked', '#color').val();
+        $.jStorage.set('color', colorPicked);
+        $(nameInput).css('color', colorPicked);
+    });
 
-    $(nameInput).css("color", color).val('').prop('disabled', false).focus();
-
-	var audioElement = document.createElement('audio');
+    var audioElement = document.createElement('audio');
     var prevGuess = "";
 	$('.name_input').on('input', function(){
 		var sound;
         var backgroundColor;
         var givenName = $(nameInput).val();
-		var nameCheck = name.substring(0, givenName.length);
+        var nameCheck = name.substring(0, givenName.length);
 
 		if (givenName == name){
             backgroundColor = 'lightgreen';
             sound = 'smw_1-up.wav';
-			$(nameInput).prop('disabled', true);
-			setTimeout(function() {
+            $(nameInput).prop('disabled', true);
+            setTimeout(function() {
 				location.reload()
 			}, 2000);
 		} else if (givenName == nameCheck && nameCheck != name && givenName.length >= prevGuess.length) {
@@ -47,13 +50,13 @@ $( document ).ready(function() {
 			backgroundColor = 'Moccasin';
 		} else {
 			var correction = givenName.substring(0, givenName.length-1);
-			$(nameInput).val(correction);
-			sound = 'smw_jump.wav';
+            $(nameInput).val(correction);
+            sound = 'smw_jump.wav';
 			backgroundColor = 'tomato';
 		}
         prevGuess = givenName;
         audioElement.setAttribute('src', 'snd/'+sound);
 		audioElement.play();
-		$(nameInput).css("background-color", backgroundColor);
+        $(nameInput).css("background-color", backgroundColor);
     });
 });
