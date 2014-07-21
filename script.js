@@ -3,7 +3,7 @@ function getRandomName() {
     var name = names[Math.floor(Math.random() * names.length)];
     var prevName = $.jStorage.get('prevName', '');
     while (name == prevName) {
-        name = getRandomName();
+        name = names[Math.floor(Math.random() * names.length)];
     }
     $.jStorage.set('prevName', name);
     return name;
