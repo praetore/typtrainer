@@ -12,16 +12,17 @@ function getRandomName() {
 $( document ).ready(function() {
     var name = getRandomName();
 
+    $('input[type=radio][value=' + $.jStorage.get('color', 'darkblue') + ']').
+        attr('checked', 'checked');
+
     var colorPicked = $('input[name=color]:checked', '#color').val();
     var nameInput = '.name_input input[type="text"]';
 
     $("div.name").append('<p>' + name + '</p>');
     $(nameInput).css('color', colorPicked).val('').prop('disabled', false).focus();
 
-    $('input[type=radio][value=' + $.jStorage.get('color', 'darkblue') + ']').
-        attr('checked', 'checked');
 
-	$('#color').find('input').change(function() {
+    $('#color').find('input').change(function() {
         colorPicked = $('input[name=color]:checked', '#color').val();
         $.jStorage.set('color', colorPicked);
         $(nameInput).css('color', colorPicked);
